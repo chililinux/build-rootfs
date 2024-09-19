@@ -58,9 +58,11 @@ runs:
     - name: Configurar o ambiente
       shell: bash
       run: |
-        WORK_PATH='/__w/build-rootfs-void/build-rootfs-void'
-        PROFILE_PATH='/__w/build-rootfs-void/build-rootfs-void/void-mklive'
-        echo "WORK_PATH=$WORK_PATH" >> "$GITHUB_ENV"        # Exporta WORK_PATH para outras etapas
+        #WORK_PATH='/__w/build-rootfs-void/build-rootfs-void'
+        #PROFILE_PATH='/__w/build-rootfs-void/build-rootfs-void/void-mklive'
+        WORK_PATH="/__w/${{REPO_NAME}}/${{REPO_NAME}}"
+        PROFILE_PATH="/__w/${{REPO_NAME}}/${{REPO_NAME}}${{REPO_NAME}}/${{REPO_NAME}}/void-mklive"
+        echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
         echo "PROFILE_PATH=$PROFILE_PATH" >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
 
     - name: Ajustar ambiente do builduser
