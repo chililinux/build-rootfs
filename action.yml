@@ -59,9 +59,9 @@ runs:
       shell: bash
       run: |
         #WORK_PATH='/__w/build-rootfs-void/build-rootfs-void'
-        #PROFILE_PATH='/__w/build-rootfs-void/build-rootfs-void/void-mklive'
+        #PROFILE_PATH='/__w/build-rootfs-void/build-rootfs-void/chili-void-mklive'
         WORK_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}"
-        PROFILE_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/void-mklive"
+        PROFILE_PATH="/__w/${{env.REPO_NAME}}/${{env.REPO_NAME}}/chili-void-mklive"
         echo "WORK_PATH=$WORK_PATH"       >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
         echo "PROFILE_PATH=$PROFILE_PATH" >> "$GITHUB_ENV"  # Exporta WORK_PATH para outras etapas
 
@@ -85,22 +85,22 @@ runs:
         cp -Rpa /etc/skel/.git-prompt* . || true
         EOF
 
-    - name: Checkout void-mklive
+    - name: Checkout chili-void-mklive
       shell: bash
       run: |
-        # Cloning void-mklive repository
+        # Cloning chili-void-mklive repository
         #REPO="${{ inputs.iso_profiles_repo }}"
-        #REPO="https://github.com/void-linux/void-mklive"
+        #REPO="https://github.com/void-linux/chili-void-mklive"
         REPO="https://github.com/chililinux/chili-void-mklive"
         echo "Repository: $REPO"
 
-        rm -rf "$WORK_PATH/void-mklive" || true
-        if ! git clone --depth 1 "$REPO" "$WORK_PATH/void-mklive"; then
-          echo "Falha ao clonar o repositorio $REPO"
+        rm -rf "$PROFILE_PATH" || true
+        if ! git clone --depth 1 "$REPO" "$PROFILE_PATH"; then
+          echo "Falha ao clonar o repositorio $REPO em $PROFILE_PATH"
           exit 1
         fi
-        # ativando 'git config --global --add safe.directory /__w/build-iso/build-iso/iso-profiles'
-        git config --global --add safe.directory "$WORK_PATH/void-mklive" || true
+        # ativando 'git config --global --add safe.directory'
+        git config --global --add safe.directory "$PROFILE_PATH" || true
 
         # clean '/__t/' directory
         rm -rf /__t/* || true
@@ -130,45 +130,13 @@ runs:
         # Denine path for directory
 
         # Check if iso-profiles directory exists before proceeding
-        if [[ ! -d "$WORK_PATH/void-mklive" ]]; then
-          echo "ERRO(L427): $WORK_PATH/void-mklive directory not found."
+        if [[ ! -d "$PROFILE_PATH" ]]; then
+          echo "ERRO(L427): Diretório $PROFILE_PATH não localizado!"
           exit 1
         fi
 
         # listando diretório iso-profiles no diretório atual
         ls -la "$WORK_PATH"
-
-        build_iso() {
-          echo "########################## RESUMO #################################"
-          echo "BUILD COMMAND            : ./mklive"
-          echo "PROFILE_PATH             : $PROFILE_PATH"
-          echo "EDITION                  : $EDITION"
-          echo "MANJAROBRANCH            : $MANJAROBRANCH"
-          echo "COMMUNITYBRANCH          : $COMMUNITYBRANCH"
-          echo "BIGLINUXBRANCH           : $BIGBRANCH"
-          echo "KERNEL_VER               : ${KERNEL_VER}"
-          echo "KERNEL_NAME              : ${KERNEL_NAME}"
-          echo "SCOPE                    : $SCOPE"
-          echo "OFFICE                   : $OFFICE"
-          echo "###################################################################"
-          echo "WORK_PATH                : $WORK_PATH"
-          echo "PROFILE_PATH             : $PROFILE_PATH"
-          echo "ISO profiles path        : $PROFILE_PATH/$EDITION"
-          echo "PATH_MANJARO_ISO_PROFILES: $PATH_MANJARO_ISO_PROFILES"
-          echo "###################################################################"
-          #echo "ROOT_RUN_DIR             : $(< /root/.config/manjaro-tools/iso-profiles.conf)"
-          #echo "BUILDUSER_RUN_DIR        : $(< /home/builduser/.config/manjaro-tools/iso-profiles.conf)"
-          echo "###################################################################"
-
-          pushd "$WORK_PATH/void-mklive"
-          #teste
-          #echo "Arquivo 1 de teste" > arquivo1.txt
-          #echo "Arquivo 2 de teste" > arquivo2.txt
-          #tar -cvJf void-x86_64-base-custom-20240918.tar.xz arquivo1.txt arquivo2.txt
-          #efetivo
-          [[ ${{ inputs.tmate }} == 'true' ]] && ./mklive || ./mklive > /dev/null
-          popd
-        }
 
         build_mkroot_fs() {
           echo "########################## RESUMO #################################"
@@ -192,7 +160,7 @@ runs:
           #echo "BUILDUSER_RUN_DIR        : $(< /home/builduser/.config/manjaro-tools/iso-profiles.conf)"
           echo "###################################################################"
 
-          pushd "$WORK_PATH/void-mklive"
+          pushd "$PROFILE_PATH"
           #teste
           #echo "Arquivo 1 de teste" > arquivo1.txt
           #echo "Arquivo 2 de teste" > arquivo2.txt
@@ -203,8 +171,8 @@ runs:
         }
 
         cleanup_and_move_files() {
-          OUTPUT_ISO_PATH_NAME=$(find "$WORK_PATH/void-mklive" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
-          OUTPUT_XZ_PATH_NAME=$(find "$WORK_PATH/void-mklive" -type f -name "*.tar.xz" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
+          OUTPUT_ISO_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.iso" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
+          OUTPUT_XZ_PATH_NAME=$(find "$PROFILE_PATH" -type f -name "*.tar.xz" -exec stat -c '%Y %n' {} + | sort -nr | awk 'NR==1 {print $2}')
           ISO_BASENAME=$(basename "$OUTPUT_ISO_PATH_NAME")
           XZ_BASENAME=$(basename "$OUTPUT_XZ_PATH_NAME")
 
