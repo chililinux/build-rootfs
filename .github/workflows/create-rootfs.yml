@@ -197,6 +197,7 @@ jobs:
           echo "ISO_FULLNAME=${{ env.ISO_FULLNAME }}"
           echo "XZ_BASENAME=${{ env.XZ_BASENAME }}"
           echo "XZ_FULLNAME=${{ env.XZ_FULLNAME }}"
+          echo "ZIP_BASENEM=${{ env.ZIP_BASENAME }}"
           echo "ZIP_FULLNAME=${{ env.ZIP_FULLNAME }}"
           echo "ISO Path from output=${{ steps.define-paths.outputs.iso_path }}"
           echo "XZ Path from output=${{ steps.define-paths.outputs.xz_path }}"
