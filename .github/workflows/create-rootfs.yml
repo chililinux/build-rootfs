@@ -133,16 +133,16 @@ jobs:
         id: build
         with:
           name: ${{ github.event.client_payload.name || inputs.name }}
-          edition: ${{ github.event.client_payload.edition || inputs.edition }}
-          release_tag: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
-          kernel: ${{ github.event.client_payload.kernel || inputs.kernel }}
-          scope: ${{ github.event.client_payload.scope || inputs.scope }}
-          office-chooser: ${{ github.event.client_payload.office-chooser || inputs.office-chooser }}
+          #edition: ${{ github.event.client_payload.edition || inputs.edition }}
+          #release_tag: ${{ github.event.client_payload.release_tag || inputs.release_tag }}
+          #kernel: ${{ github.event.client_payload.kernel || inputs.kernel }}
+          #scope: ${{ github.event.client_payload.scope || inputs.scope }}
+          #office-chooser: ${{ github.event.client_payload.office-chooser || inputs.office-chooser }}
 
           # Parâmetros de branches
-          manjaro_branch: ${{ github.event.client_payload.manjaro_branch || inputs.manjaro_branch }}
-          community_branch: ${{ github.event.client_payload.community_branch || inputs.community_branch }}
-          biglinux_branch: ${{ github.event.client_payload.biglinux_branch || inputs.biglinux_branch }}
+          #manjaro_branch: ${{ github.event.client_payload.manjaro_branch || inputs.manjaro_branch }}
+          #community_branch: ${{ github.event.client_payload.community_branch || inputs.community_branch }}
+          #biglinux_branch: ${{ github.event.client_payload.biglinux_branch || inputs.biglinux_branch }}
 
           # Depuração
           tmate: ${{ github.event.client_payload.tmate || 'false' }}

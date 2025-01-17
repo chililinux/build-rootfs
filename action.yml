@@ -9,6 +9,9 @@ inputs:
     description: "Enable debugging with tmate"
     required: false
     default: true
+  github_token:
+    description: "GitHub token for authentication"
+    required: true
 
 outputs:
   iso_path:
