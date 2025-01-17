@@ -256,6 +256,7 @@ runs:
         fi
 
     - name: Debug environment variables and List Files
+      shell: bash
       run: |
         echo "ISO_BASENAME=${{ env.ISO_BASENAME }}"
         echo "ISO_FULLNAME=${{ env.ISO_FULLNAME }}"
