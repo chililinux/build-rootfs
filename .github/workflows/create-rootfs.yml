@@ -33,6 +33,9 @@ on:
   schedule:
     - cron: "0 22 * * 5" # Roda toda sexta-feira às 18:00 UTC-4
 
+env:
+  GITHUB_TOKEN: "${{ secrets.ORGANIZATION_TOKEN }}"
+
 # Jobs do workflow
 jobs:
   # Job para obter a hora atual
