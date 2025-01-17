@@ -272,8 +272,6 @@ runs:
 
     - name: Upload FILES as artifact
       uses: actions/upload-artifact@v3
-      env:
-        GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
       with:
         name: ${{ env.ZIP_BASENAME }}
         path: |
@@ -286,8 +284,6 @@ runs:
     - name: Criar release zip
       id: create_release_zip
       uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
       with:
         tag_name: ${{ github.run_id }}_zip
         release_name: Release ${{ needs.get-time.outputs.time }}_zip
@@ -300,8 +296,6 @@ runs:
     - name: Fazer upload do arquivo .zip no release
       id: upload-release-asset-zip
       uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
       with:
         upload_url: ${{ steps.create_release_zip.outputs.upload_url }} # URL gerada no passo da criação da release
         asset_path: ${{ env.ZIP_FULLNAME }} # Caminho do arquivo .zip
@@ -311,8 +305,6 @@ runs:
     - name: Criar release .tar.xz
       id: create_release_xz
       uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
       with:
         tag_name: ${{ env.XZ_TAG_NAME }}
         release_name: Release ${{ env.XZ_TAG_NAME }}
@@ -325,8 +317,6 @@ runs:
     - name: Fazer upload do arquivo .tar.xz no release
       id: upload-release-asset-tar-xz
       uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
       with:
         upload_url: ${{ steps.create_release_xz.outputs.upload_url }} # URL gerada no passo da criação da release
         asset_path: ${{ env.XZ_FULLNAME }} # Caminho do arquivo .tar.xz
@@ -339,8 +329,6 @@ runs:
         pushd "${{ env.WORK_PATH }}"
         git clone --depth=1 https://github.com/voidlinux-br/void-installer.git
         popd
-      env:
-        GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
 
     - name: Copiar arquivo .tar.gz para o repositório de destino
       shell: bash
@@ -377,5 +365,3 @@ runs:
         pushd "${{ env.WORK_PATH }}/void-installer"
         git push origin main
         popd
-      env:
-        GITHUB_TOKEN: ${{ secrets.ORGANIZATION_TOKEN }}
