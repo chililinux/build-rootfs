@@ -146,13 +146,6 @@ runs:
           echo "BUILD COMMAND            : ./mkrootfs"
           echo "PROFILE_PATH             : $PROFILE_PATH"
           echo "EDITION                  : $EDITION"
-          echo "MANJAROBRANCH            : $MANJAROBRANCH"
-          echo "COMMUNITYBRANCH          : $COMMUNITYBRANCH"
-          echo "BIGLINUXBRANCH           : $BIGBRANCH"
-          echo "KERNEL_VER               : ${KERNEL_VER}"
-          echo "KERNEL_NAME              : ${KERNEL_NAME}"
-          echo "SCOPE                    : $SCOPE"
-          echo "OFFICE                   : $OFFICE"
           echo "###################################################################"
           echo "WORK_PATH                : $WORK_PATH"
           echo "PROFILE_PATH             : $PROFILE_PATH"
@@ -164,11 +157,6 @@ runs:
           echo "###################################################################"
 
           pushd "$PROFILE_PATH"
-          #teste
-          #echo "Arquivo 1 de teste" > arquivo1.txt
-          #echo "Arquivo 2 de teste" > arquivo2.txt
-          #tar -cvJf void-x86_64-base-custom-20240918.tar.xz arquivo1.txt arquivo2.txt
-          #efetivo
           [[ ${{ inputs.tmate }} == 'true' ]] && ./mkrootfs || ./mkrootfs > /dev/null
           popd
         }
@@ -196,12 +184,8 @@ runs:
           fi
         }
 
-        main() {
-          build_mkroot_fs
-          cleanup_and_move_files
-        }
-
-        main
+        build_mkroot_fs
+        cleanup_and_move_files
 
     - name: Extrair data do nome do arquivo .tar.xz e definir tag_name
       id: set-tag-name
