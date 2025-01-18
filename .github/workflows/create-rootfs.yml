@@ -28,7 +28,7 @@ on:
         type: boolean
         description: "Enable debugging with tmate"
         required: false
-        default: true
+        default: false
 
   schedule:
     - cron: "0 22 * * 5" # Roda toda sexta-feira às 18:00 UTC-4
@@ -156,24 +156,30 @@ jobs:
       - name: Calculate MD5 Hash of files
         shell: bash
         run: |
-          pushd "${{ env.WORK_PATH }}"
-          echo "Calculating MD5 hash for: ${{ env.XZ_FULLNAME }} file..."
-          echo "XZ_BASENAME is: '${{ env.XZ_BASENAME }}'"
+          #Calculate MD5 Hash of files
+          source /tmp/send_telegram_message.sh
+
+          replicate "#"
+          msg_run "pushd ${{ env.WORK_PATH }}"
+          msg_raw "Calculating MD5 hash for: ${{ env.XZ_FULLNAME }} file..."
+          msg_raw "XZ_BASENAME is          : '${{ env.XZ_BASENAME }}'"
+
           if [[ -f "${{ env.XZ_BASENAME }}" ]]; then
             md5sum "${{ env.XZ_BASENAME }}" > "${{ env.XZ_BASENAME }}.md5"
-            echo "MD5 '$XZ_BASENAME.md5' hash calculated and saved:"
-            cat "${{ env.XZ_BASENAME }}.md5"
+            msg_info "MD5 '$XZ_BASENAME.md5' hash calculated and saved:"
+            msg_run "cat ${{ env.XZ_BASENAME }}.md5"
           else
-            echo "ERRO: ${{ env.XZ_BASENAME }} file not found at ${{ env.WORK_PATH }}"
-            exit 1
+            die "ERRO: ${{ env.XZ_BASENAME }} file not found at ${{ env.WORK_PATH }}"
           fi
-          popd
+          msg_run "popd"
 
       - name: Prepare ZIP file for release
         id: prepare-iso
         shell: bash
         run: |
-          ls -lha
+          #Prepare ZIP file for release
+          source /tmp/send_telegram_message.sh
+          msg_run "ls -lha $PWD"
           release=${{ env.XZ_BASENAME }} # Apenas obtém o nome do arquivo com extensão
           release="${release%.tar.xz}"
           echo "release_name=${release}" >> $GITHUB_ENV
@@ -185,28 +191,27 @@ jobs:
               ${{ env.XZ_FULLNAME }} \
               ${{ env.XZ_FULLNAME }}.md5; then
             echo "ZIP_FULLNAME=${{ env.WORK_PATH }}/${release}.zip" >> "$GITHUB_ENV"
-            echo "ZIP_BASENAME=${release}.zip"                        >> "$GITHUB_ENV"
+            echo "ZIP_BASENAME=${release}.zip"                      >> "$GITHUB_ENV"
             echo "${ZIP_FULLNAME} prepared for release"
-            ls -lha
+            msg_run "ls -lha $PWD"
           else
-            echo "ERRO: No preparo do arquivo ZIP para release"
-            exit 1
+            die "ERRO: No preparo do arquivo ZIP para release"
           fi
 
       - name: Debug environment variables and List Files
         shell: bash
         run: |
-          echo "ISO_BASENAME=${{ env.ISO_BASENAME }}"
-          echo "ISO_FULLNAME=${{ env.ISO_FULLNAME }}"
-          echo "XZ_BASENAME=${{ env.XZ_BASENAME }}"
-          echo "XZ_FULLNAME=${{ env.XZ_FULLNAME }}"
-          echo "ZIP_BASENEM=${{ env.ZIP_BASENAME }}"
-          echo "ZIP_FULLNAME=${{ env.ZIP_FULLNAME }}"
-          echo "ISO Path from output=${{ steps.define-paths.outputs.iso_path }}"
-          echo "XZ Path from output=${{ steps.define-paths.outputs.xz_path }}"
-
-          # ls -la "${{ env.WORK_PATH }}
-          ls -lah "${{ env.WORK_PATH }}"
+          #Debug environment variables and List Files
+          source /tmp/send_telegram_message.sh
+          msg_raw "ISO_BASENAME         : ${{ env.ISO_BASENAME }}"
+          msg_raw "ISO_FULLNAME         : ${{ env.ISO_FULLNAME }}"
+          msg_raw "XZ_BASENAME          : ${{ env.XZ_BASENAME }}"
+          msg_raw "XZ_FULLNAME          : ${{ env.XZ_FULLNAME }}"
+          msg_raw "ZIP_BASENEM          : ${{ env.ZIP_BASENAME }}"
+          msg_raw "ZIP_FULLNAME         : ${{ env.ZIP_FULLNAME }}"
+          msg_raw "ISO Path from output : ${{ steps.define-paths.outputs.iso_path }}"
+          msg_raw "XZ Path from output  : ${{ steps.define-paths.outputs.xz_path }}"
+          msg_run "ls -lah ${{ env.WORK_PATH }}"
 
       - name: Upload FILES as artifact
         uses: actions/upload-artifact@v3

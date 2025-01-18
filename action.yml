@@ -34,7 +34,7 @@ inputs:
   tmate:
     description: "Enable debugging with tmate"
     required: false
-    default: true
+    default: false
   github_token:
     description: "GitHub token for authentication"
     required: true
@@ -282,22 +282,20 @@ runs:
 
         # Check if iso-profiles directory exists before proceeding
         if [[ ! -d "$PROFILE_PATH" ]]; then
-          echo "ERRO(L427): Diretório $PROFILE_PATH não localizado!"
-          exit 1
+          die "ERRO(L427): Diretório $PROFILE_PATH não localizado!"
         fi
 
         # listando diretório iso-profiles no diretório atual
         msg_run "ls -lah $WORK_PATH"
 
         build_mkroot_fs() {
-          replicate "######################### RESUMO #################################"
+          replicate "######################### RESUMO #################################" 1
           msg_raw "BUILD COMMAND            : ./mkrootfs"
           msg_raw "PROFILE_PATH             : $PROFILE_PATH"
           replicate "#"
           msg_raw "WORK_PATH                : $WORK_PATH"
           msg_raw "PROFILE_PATH             : $PROFILE_PATH"
           msg_raw "ISO profiles path        : $PROFILE_PATH/$EDITION"
-          msg_raw "PATH_MANJARO_ISO_PROFILES: $PATH_MANJARO_ISO_PROFILES"
           #replicate "#"
           #msg_raw "ROOT_RUN_DIR             : $(< /root/.config/manjaro-tools/iso-profiles.conf)"
           #msg_raw "BUILDUSER_RUN_DIR        : $(< /home/builduser/.config/manjaro-tools/iso-profiles.conf)"
